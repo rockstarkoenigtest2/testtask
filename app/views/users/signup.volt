@@ -51,7 +51,7 @@
             <div class="form-group">
                 <div class="col-md-offset-3 col-md-9">
                     {{ submit_button('Create account', 'class': 'btn btn-info ') }}
-                    <a href="/users/signin" class="col-md-offset-1">I have account</a>
+                    <a href="{{ url('users') }}/signin" class="col-md-offset-1">I have account</a>
                 </div>
             </div>
         </fieldset>

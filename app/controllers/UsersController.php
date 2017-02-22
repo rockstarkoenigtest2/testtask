@@ -15,7 +15,7 @@ class UsersController extends ControllerBase
     public function indexAction()
     {
         if (!$this->session->get('id')) {
-            return $this->forward('/');
+            return $this->forward('');
         }
 
         $page = $this->request->get("page");
@@ -46,7 +46,7 @@ class UsersController extends ControllerBase
         );
 
         $groups = Groups::find();
-        $this->view->pagingUrl = empty($query) ? "/users&page=" : "/users?search=" . $query . "&page=";
+        $this->view->pagingUrl = empty($query) ? "users&page=" : "users?search=" . $query . "&page=";
         $this->view->groups = $groups;
         $this->view->query = $query;
         $this->view->totalCount = count($users);
@@ -185,7 +185,7 @@ class UsersController extends ControllerBase
                 $this->sendRecoveryEMail($email, $user->id, $token);
 
                 $this->flashSession->success('We have sent instructions to ' . $email . '. Check it.');
-                return $this->forward("/");
+                return $this->forward("");
             } else if (!empty($password)) {
 
                 // Changing user's password
@@ -216,7 +216,7 @@ class UsersController extends ControllerBase
                 }
 
                 $this->flashSession->success('Your new password successfully changed! Use it to sign in.');
-                return $this->forward("/users/signin");
+                return $this->forward("users/signin");
             }
         }
 
@@ -254,7 +254,7 @@ class UsersController extends ControllerBase
         echo $result;
     }
 
-    public function signinAction()
+    public function     signinAction()
     {
         $this->flashSession->output();
         if (!$this->request->isPost()) {
@@ -320,7 +320,7 @@ class UsersController extends ControllerBase
             Tag::setDefault('password', '');
             $this->flashSession->success('Thanks for sign-up!');
 
-            return $this->forward('/users/signin');
+            return $this->forward('users/signin');
         }
     }
 

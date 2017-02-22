@@ -8,7 +8,7 @@ class IndexController extends ControllerBase
         $this->flashSession->output();
 
         if ($this->session->get('id')) {
-            $this->forward("/users");
+            $this->forward("users");
         }
     }
 

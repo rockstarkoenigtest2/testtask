@@ -44,18 +44,17 @@
         modalForm.on('submit', function(e){
             $.ajax({
                 type: "POST",
-                url: "/users/" + action,
+                url: '{{ url('users') }}/' + action,
                 data: $('form[name="modalForm"]').serialize(),
                 success: function(data)
                 {
                     var dataObject = JSON.parse(data);
-                    console.log("data", dataObject);
                     if (dataObject.hasOwnProperty("error")) {
                         $('#modalError').show();
                         $('#modalError').text(dataObject.error);
                     } else {
                         if (action == "create") {
-                            $(location).attr('href', '/users?page=last')
+                            $(location).attr('href', '{{ url('users') }}' + '?page=last')
                         } else {
                             location.reload();
                         }
@@ -111,7 +110,7 @@
         $("#deleteConfirmButton").click(function() {
             $.ajax({
                 type: "POST",
-                url: "/users/delete",
+                url: '{{ url('users') }}' + '/delete',
                 data: "id=" + $(this).data("pk"),
                 success: function(data)
                 {
@@ -121,7 +120,6 @@
         });
 
         $('#submitButton').click(function () {
-            console.log("click")
             $('form[name="modalForm"]').submit();
         });
     });
@@ -146,7 +144,7 @@
             <ul class="nav navbar-nav">
                 <p class="navbar-text">Hi, {{ session.get("name") }}!</p>
             </ul>
-            <form class="navbar-form navbar-left" action="/users">
+            <form class="navbar-form navbar-left" action="{{ url('users') }}">
                 <div class="form-group">
                     <input type="text" name="search" class="form-control" placeholder="Search">
                 </div>
@@ -159,7 +157,7 @@
                     <p class="navbar-btn"><a href="#" id="createButton" class="btn btn-default" data-toggle="modal" data-target="#userDataModal">Create new user</a></p>
                 </li>
             {% endif %}
-            <li><a href="/users/logout">Logout</a></li>
+            <li><a href="{{ url('users') }}/logout">Logout</a></li>
             </ul>
         </div>
     </div>
@@ -261,5 +259,5 @@
 {% endif %}
 
 {% if not(query is empty) %}
-    <p><a href="/users" class="btn btn-info">Back to all users</a></p>
+    <p><a href="{{ url('users') }}" class="btn btn-info">Back to all users</a></p>
 {% endif %}

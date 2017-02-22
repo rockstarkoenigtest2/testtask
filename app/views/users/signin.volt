@@ -24,12 +24,12 @@
             <div class="form-group">
                 <div class="col-md-offset-3 col-md-9">
                     {{ submit_button('Login', 'class': 'btn btn-info ') }}
-                    <a href="/users/signup" class="col-md-offset-1">Create account</a>
+                    <a href="{{ url('users') }}/signup" class="col-md-offset-1">Create account</a>
                 </div>
                 <br>
                 <br>
                 <div class="col-md-offset-3 col-md-9 ">
-                    <a href="/users/passwordRecovery" class="text-warning">Forgot password?</a>
+                    <a href="{{ url('users') }}/passwordRecovery" class="text-warning">Forgot password?</a>
                 </div>
             </div>
         </fieldset>

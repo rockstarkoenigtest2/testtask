@@ -8,16 +8,16 @@
     {{ form('users/signup', 'class': 'form-horizontal', 'onbeforesubmit': 'return false') }}
         <fieldset>
             <div class="form-group">
-                <label for="email" class="col-md-3 control-label">Email</label>
+                <label for="email" class="col-md-3 control-label">Name</label>
                 <div class="col-md-9">
-                    {{ text_field('email', 'class': "form-control", 'placeholder':"your email") }}
+                    {{ text_field('name', 'class': "form-control", 'placeholder':"your name") }}
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="email" class="col-md-3 control-label">Name</label>
+                <label for="email" class="col-md-3 control-label">Email</label>
                 <div class="col-md-9">
-                    {{ text_field('name', 'class': "form-control", 'placeholder':"your name") }}
+                    {{ text_field('email', 'class': "form-control", 'placeholder':"your email") }}
                 </div>
             </div>
 

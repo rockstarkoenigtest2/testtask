@@ -11,7 +11,7 @@
             var header = headers[i];
 
             if (key == 'groups') {
-                var userGroups = values ? values[i].split(', ') : [];
+                var userGroups = values ? values[i].split(',') : [];
                 formGroup = $('<div class="form-group"></div>');
                 formGroup.append('<label for="groups[]">' + header + '</label><br>');
                 modalForm.append(formGroup);
@@ -197,7 +197,7 @@
                     <td style="text-align:center;" class="">{{ item.id }}</td>
                     <td class="">{{ item.name }}</td>
                     <td>{{ item.email }}</td>
-                    <td>{{ joinGroupNames(item.groups) }}</td>
+                    <td>{{ item.group_names }}</td>
                     {% if session.get("can_edit") %}
                         <td>
                             <button class="btn btn-warning editButton" data-toggle="modal" data-target="#userDataModal" contenteditable="false">Edit</button>

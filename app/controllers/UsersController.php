@@ -21,16 +21,15 @@ class UsersController extends ControllerBase
         $page = $this->request->get("page");
         $query = $this->request->get("search");
 
+        $builder = Users::query()->join('Groups');
         if (!empty($query)) {
-            $users = Users::query()
-                ->join('Groups')
-                ->where('Groups.name LIKE "%' . $query . '%"')
-                ->orWhere('email LIKE "%' . $query . '%"')
-                ->distinct(true)
-                ->execute();
-        } else {
-            $users = Users::find();
+            $builder
+                ->where('Groups.name LIKE :query:', ['query' => "%" . $query . "%"])
+                ->orWhere('email LIKE :query:', ['query' => "%" . $query . "%"]);
         }
+        $builder->columns("Users.id, Users.name, Users.email, GROUP_CONCAT(Groups.name) AS group_names");
+        $builder->groupBy("Users.id");
+        $users = $builder->execute();
 
         $pageMax = max(1, ceil(count($users) / UsersController::PAGE_CAPACITY));
         if ($page == 'last' || $page > $pageMax) {
@@ -104,7 +103,10 @@ class UsersController extends ControllerBase
         $user->password = sha1($password);
         $user->name = $name;
         $user->email = $email;
-        $user->groups = Groups::find('id IN ('.implode(',', $groups).')');
+        $user->groups = Groups::find([
+            'id IN ({id:array})',
+            'bind' => ['id' => $groups]
+        ]);
 
         if ($user->save() == false) {
             $errors = [];
@@ -143,7 +145,10 @@ class UsersController extends ControllerBase
         $user->name = $name;
         $user->email = $email;
         $user->UsersGroups->delete();
-        $user->groups = Groups::find('id IN ('.implode(',', $groups).')');
+        $user->groups = Groups::find([
+            'id IN ({id:array})',
+            'bind' => ['id' => $groups]
+        ]);
 
         if ($user->save() == false) {
             $errors = [];
@@ -168,7 +173,7 @@ class UsersController extends ControllerBase
 
                 // Generate and send recovery e-mail
 
-                $user = Users::findFirst("email='$email'");
+                $user = Users::findFirst(['email = (:email:)', 'bind' => ['email' => $email]]);
 
                 if (empty($user)) {
                     $this->flash->error('Cannot find user with such e-mail: ' . $email);
@@ -204,14 +209,14 @@ class UsersController extends ControllerBase
 
                 $user = Users::findFirst($id);
                 if (empty($user)) {
-                    $this->flash->error('Unknown error with password recovering (user not found). Please try again later.');
+                    $this->flash->error('Error with password recovering (user not found). Please try again later.');
                     return;
                 }
 
                 $user->password = sha1($password);
                 $user->token = null;
                 if ($user->save() === false) {
-                    $this->flash->error('Unknown error with password recovering (saving failed). Please try again later.');
+                    $this->flash->error('Error with password recovering (saving failed). Please try again later.');
                     return;
                 }
 
@@ -254,7 +259,7 @@ class UsersController extends ControllerBase
         echo $result;
     }
 
-    public function     signinAction()
+    public function signinAction()
     {
         $this->flashSession->output();
         if (!$this->request->isPost()) {
@@ -266,10 +271,9 @@ class UsersController extends ControllerBase
         $password = $this->request->getPost('password');
         $password = sha1($password);
 
-        $user = Users::findFirst("email='$email' AND password='$password'");
+        $user = Users::findFirst(["conditions" => "email=:email: AND password=:password:", "bind" => ['email' => $email, 'password' => $password]]);
         if (!empty($user)) {
             $this->registerSession($user);
-            $this->flash->success('Welcome ' . $user->name);
             return $this->forward('users');
         }
 
@@ -309,17 +313,17 @@ class UsersController extends ControllerBase
         $user->password = sha1($password);
         $user->name = $name;
         $user->email = $email;
-        $user->groups = Groups::find('id IN ('.implode(',', $groups).')');
+        $user->groups = Groups::find([
+            'id IN ({id:array})',
+            'bind' => ['id' => $groups]
+        ]);
 
         if ($user->save() == false) {
             foreach ($user->getMessages() as $message) {
                 $this->flash->error((string) $message);
             }
         } else {
-            Tag::setDefault('email', $email);
-            Tag::setDefault('password', '');
             $this->flashSession->success('Thanks for sign-up!');
-
             return $this->forward('users/signin');
         }
     }

@@ -71,7 +71,7 @@ $config = $di->getConfig();
 $di->set('mailer', function() use ($config) {
     include BASE_PATH . '/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 
-    $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465)
+    $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 587)
         ->setEncryption('ssl')
         ->setUsername('rockstar.koenig.test2@gmail.com')
         ->setPassword("ZXadqr243");
